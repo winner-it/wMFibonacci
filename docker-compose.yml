@@ -1,0 +1,22 @@
+version: "2"
+
+networks:
+  sagdevops:
+
+services:
+  builder:
+    image: registry.docker.tests:5000/softwareag/abe:10.1
+    command: ant build
+    volumes:
+      - .:/workspace
+    networks: 
+      - sagdevops
+
+  deployer:
+    image: registry.docker.tests:5000/softwareag/deployer:10.1
+    volumes:
+      - .:/workspace
+    ports:
+      - "5555:5555"
+    networks: 
+      - sagdevops
