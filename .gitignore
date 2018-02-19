@@ -1,4 +1,9 @@
 .DS_Store
+.idea
+.idea/
+*.iml
+target/
+
 # ---> Java
 *.class
 
