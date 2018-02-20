@@ -14,14 +14,14 @@ pipeline {
         stage('Build') {
             steps {
                 timeout(time:1, unit:'MINUTES') {
-                    sh "docker-compose -p ${PROJECT_NAME} build"
+                    sh "docker-compose -p ${PROJECT_NAME} up appbuild"
                 }
             }
         }
         stage('Deploy') {
             steps {
                 timeout(time:10, unit:'MINUTES') {
-                    sh 'docker-compose -p ${PROJECT_NAME} deploy'
+                    sh 'docker-compose -p ${PROJECT_NAME} up appdeploy'
                 }
             }
         }
