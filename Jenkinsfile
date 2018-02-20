@@ -25,6 +25,13 @@ pipeline {
                 }
             }
         }
+        stage('Tests') {
+            steps {
+                timeout(time:10, unit:'MINUTES') {
+                    sh 'docker-compose -p ${PROJECT_NAME} up apptests'
+                }
+            }
+        }
     }
 
     post {

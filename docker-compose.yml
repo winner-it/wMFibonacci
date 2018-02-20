@@ -25,6 +25,14 @@ services:
     networks: 
       - sagdevops
 
+  apptests:
+    image: registry.docker.tests:5000/softwareag/abe:10.1
+    command: ant -DprojectName=${PROJECT_NAME} test
+    volumes:
+      - .:/workspace
+    networks:
+      - sagdevops
+
   apptesttarget:
     image: registry.docker.tests:5000/softwareag/msc:10.1
     ports:
