@@ -21,7 +21,6 @@ services:
       - "8094:5555"
       - "8095:9999"
     depends_on:
-      - appbuild
       - apptesttarget
     networks: 
       - sagdevops
