@@ -14,9 +14,21 @@ services:
 
   deployer:
     image: registry.docker.tests:5000/softwareag/deployer:10.1
+    command: ant deploy
     volumes:
       - .:/workspace
     ports:
-      - "5555:5555"
+      - "8094:5555"
+      - "8095:9999"
+    depends_on:
+      - builder
     networks: 
+      - sagdevops
+
+  testtarget:
+    image: registry.docker.tests:5000/softwareag/msc:10.1
+    ports:
+      - "5555:5555"
+      - "9999:9999"
+    networks:
       - sagdevops
