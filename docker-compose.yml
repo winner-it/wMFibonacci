@@ -1,0 +1,34 @@
+version: "2"
+
+networks:
+  sagdevops:
+
+services:
+  appbuild:
+    image: registry.docker.tests:5000/softwareag/abe:10.1
+    command: ant -DprojectName=${PROJECT_NAME} build
+    volumes:
+      - .:/workspace
+    networks: 
+      - sagdevops
+
+  appdeploy:
+    image: registry.docker.tests:5000/softwareag/deployer:10.1
+    command: ant -DprojectName=${PROJECT_NAME} deploy
+    volumes:
+      - .:/workspace
+    ports:
+      - "8094:5555"
+      - "8095:9999"
+    depends_on:
+      - apptesttarget
+    networks: 
+      - sagdevops
+
+  apptesttarget:
+    image: registry.docker.tests:5000/softwareag/msc:10.1
+    ports:
+      - "5555:5555"
+      - "9999:9999"
+    networks:
+      - sagdevops

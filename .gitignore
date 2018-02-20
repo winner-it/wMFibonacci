@@ -1,4 +1,10 @@
 .DS_Store
+.idea
+.idea/
+*.iml
+target/
+ProjectAutomator/
+
 # ---> Java
 *.class
 
