@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <project name="wMFibonacci" default="buildDeployTest" basedir="." >
-    <property name="sag.ci.home" value="sagdevops-ci-assets" />
-
-    <import file="sagdevops-ci-assets/build.xml"/>
+    <property name="workspace.dir" location="."/>
 
     <!-- project.properties -->
     <property file="project.properties"/>
 
-    <property name="workspace.dir" location="."/>
+    <property name="sag.ci.home" value="${workspace.dir}/sagdevops-ci-assets" />
+
+    <import file="${sag.ci.home}/build.xml"/>
 
     <!-- remap the VCS structure defined in project.properties to have absolute paths -->
     <property name="isProjectsDir" location="${isPackages}"/>
@@ -27,6 +27,7 @@
     </target>
 
     <target name="build" depends="">
+        <echo>sag.ci.home=${sag.ci.home}</echo>
         <antcall target="Build and Deploy Solution.build"></antcall>
     </target>
 
