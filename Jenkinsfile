@@ -13,14 +13,16 @@ pipeline {
     }
 
     stages {
-        # Use Advanced Sub-Module Behaviors in Jenkins
-        #stage("Checkout") {
-        #    steps {
-        #        checkout scm
-        #        sh 'git submodule update --init'
-        #        stash(name:'scripts', includes:'**')
-        #    }
-        #}
+        /*
+        Use Advanced Sub-Module Behaviors in Jenkins
+        stage("Checkout") {
+            steps {
+                checkout scm
+                sh 'git submodule update --init'
+                stash(name:'scripts', includes:'**')
+            }
+        }
+        */
         stage('Build') {
             steps {
                 timeout(time:1, unit:'MINUTES') {
