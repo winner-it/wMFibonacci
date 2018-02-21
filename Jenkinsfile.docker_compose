@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
-        WORKSPACE = ${env.WORKSPACE}
+        WORKSPACE = "${env.WORKSPACE}"
     }
 
     options {
