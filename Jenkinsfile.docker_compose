@@ -23,50 +23,24 @@ pipeline {
             }
         }
         */
-        stage('Prepare') {
-            steps {
-                timeout(time:5, unit:'MINUTES') {
-                    sh "docker-compose -p ${PROJECT_NAME} start testserver"
-                }
-            }
-        }
         stage('Build') {
-            agent {
-                docker {
-                    image 'registry.docker.tests:5000/softwareag/abe:10.1'
-                    args '-v ${env.WORKSPACE}:/workspace'
-                }
-            }
             steps {
                 timeout(time:1, unit:'MINUTES') {
-                    sh "ant -DprojectName=${PROJECT_NAME} build"
+                    sh "docker-compose -p ${PROJECT_NAME} up compile"
                 }
             }
         }
         stage('Deploy') {
-            agent {
-                docker {
-                    image 'registry.docker.tests:5000/softwareag/deployer:10.1'
-                    args '-v ${env.WORKSPACE}:/workspace'
-                }
-            }
-
             steps {
                 timeout(time:10, unit:'MINUTES') {
-                    sh "ant -DprojectName=${PROJECT_NAME} deploy"
+                    sh 'docker-compose -p ${PROJECT_NAME} up deploy'
                 }
             }
         }
         stage('Tests') {
-            agent {
-                docker {
-                    image 'registry.docker.tests:5000/softwareag/wmtestsuite:10.1'
-                    args '-v ${env.WORKSPACE}:/workspace'
-                }
-            }
             steps {
                 timeout(time:10, unit:'MINUTES') {
-                    sh "ant -DprojectName=${PROJECT_NAME} test"
+                    sh 'docker-compose -p ${PROJECT_NAME} up unittests'
                 }
             }
             post {
