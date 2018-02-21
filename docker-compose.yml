@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 
 networks:
   sagdevops:
@@ -10,7 +10,7 @@ services:
     environment:
       - EXIT_AFTER_COMMAND=true
     volumes:
-      - .:/workspace
+      - ${WORKSPACE-.}:/workspace
     networks: 
       - sagdevops
 
@@ -20,13 +20,11 @@ services:
     environment:
       - EXIT_AFTER_COMMAND=false
     volumes:
-      - .:/workspace
+      - ${WORKSPACE-.}:/workspace
     ports:
       - "8094:5555"
       - "8095:9999"
-    depends_on:
-      - testserver
-    networks: 
+    networks:
       - sagdevops
 
   unittests:
@@ -35,9 +33,7 @@ services:
     environment:
       - EXIT_AFTER_COMMAND=false
     volumes:
-      - .:/workspace
-    depends_on:
-      - testserver
+      - ${WORKSPACE-.}:/workspace
     networks:
       - sagdevops
 
