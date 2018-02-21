@@ -37,7 +37,6 @@ pipeline {
     post {
         always {
             sh "docker-compose -p ${PROJECT_NAME} down -v || true"
-            junit 'report/**/TEST-*.xml'
         }
     }
 }
