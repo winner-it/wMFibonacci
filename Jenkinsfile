@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker'
+    }
 
     environment {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
@@ -11,6 +13,16 @@ pipeline {
     }
 
     stages {
+        stage("Checkout") {
+            agent {
+                label 'master'
+            }
+            steps {
+                checkout scm
+                sh 'git submodule update --init'
+                stash(name:'scripts', includes:'**')
+            }
+        }
         stage('Build') {
             steps {
                 timeout(time:1, unit:'MINUTES') {
