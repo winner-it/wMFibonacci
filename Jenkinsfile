@@ -26,7 +26,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 timeout(time:5, unit:'MINUTES') {
-                    sh "docker-compose -p ${PROJECT_NAME} start testserver"
+                    sh "docker-compose -p ${PROJECT_NAME} up testserver"
                 }
             }
         }
