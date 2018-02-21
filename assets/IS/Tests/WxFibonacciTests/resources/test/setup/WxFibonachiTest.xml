@@ -3,17 +3,17 @@
     <webMethodsTestCase name="SuccessCase">
         <service folder="WxFibonacci.services" name="getNextNumber">
             <input>
-                <file filename="resources/test/xml/data/fibValidInput.xml"/>
+                <file filename="resources/test/data/fibValidInput.xml"/>
             </input>
             <expected>
-                <file filename="resources/test/xml/data/fibExpectedOutput.xml"/>
+                <file filename="resources/test/data/fibExpectedOutput.xml"/>
             </expected>
         </service>
     </webMethodsTestCase>
     <webMethodsTestCase name="TestException">
         <service folder="WxFibonacci.services" name="getNextNumber">
             <input>
-                <file filename="resources/test/xml/data/fibInvalidInput.xml"/>
+                <file filename="resources/test/data/fibInvalidInput.xml"/>
             </input>
             <expected>
                 <exception class="com.wm.lang.flow.FlowException" message="The fibunachi series start from 0."/>
