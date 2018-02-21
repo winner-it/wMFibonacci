@@ -3,7 +3,7 @@
 .idea/
 *.iml
 target/
-ProjectAutomator/
+report/
 
 # ---> Java
 *.class
