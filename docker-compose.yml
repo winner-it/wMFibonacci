@@ -4,36 +4,44 @@ networks:
   sagdevops:
 
 services:
-  appbuild:
+  compile:
     image: registry.docker.tests:5000/softwareag/abe:10.1
     command: ant -DprojectName=${PROJECT_NAME} build
+    environment:
+      - EXIT_AFTER_COMMAND=true
     volumes:
       - .:/workspace
     networks: 
       - sagdevops
 
-  appdeploy:
+  deploy:
     image: registry.docker.tests:5000/softwareag/deployer:10.1
     command: ant -DprojectName=${PROJECT_NAME} deploy
+    environment:
+      - EXIT_AFTER_COMMAND=false
     volumes:
       - .:/workspace
     ports:
       - "8094:5555"
       - "8095:9999"
     depends_on:
-      - apptesttarget
+      - testserver
     networks: 
       - sagdevops
 
-  apptests:
-    image: registry.docker.tests:5000/softwareag/abe:10.1
+  unittests:
+    image: registry.docker.tests:5000/softwareag/wmtestsuite:10.1
     command: ant -DprojectName=${PROJECT_NAME} test
+    environment:
+      - EXIT_AFTER_COMMAND=false
     volumes:
       - .:/workspace
+    depends_on:
+      - testserver
     networks:
       - sagdevops
 
-  apptesttarget:
+  testserver:
     image: registry.docker.tests:5000/softwareag/msc:10.1
     ports:
       - "5555:5555"
