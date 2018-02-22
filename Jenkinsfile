@@ -7,6 +7,7 @@ pipeline {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
         WORKSPACE = "/var/jenkins_home/workspace/wMFibonacci"
         REGISTRY = "registry.docker.tests:5000"
+        IMAGE_NAME = "${env.JOB_NAME.toLowerCase()}"
         IMAGE_PREFIX = "softwareag"
     }
 
@@ -64,7 +65,7 @@ pipeline {
                 echo 'Saving Docker image'
                 script {
                     docker.withRegistry('https://${REGISTRY}}') {
-                        def customImage = docker.build("${IMAGE_PREFIX}/${env.JOB_NAME}:${env.BUILD_ID}")
+                        def customImage = docker.build("${IMAGE_PREFIX}/${IMAGE_NAME}:${env.BUILD_ID}")
                         customImage.push()
                         customImage.push("latest")
                     }
