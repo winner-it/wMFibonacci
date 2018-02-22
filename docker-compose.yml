@@ -44,3 +44,14 @@ services:
       - "9999:9999"
     networks:
       - sagdevops
+
+  wm_fibonacci:
+    image: registry.docker.tests:5000/softwareag/wm_fibonacci:10.1
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "5555:5555"
+      - "9999:9999"
+    networks:
+      - sagdevops
