@@ -5,4 +5,5 @@ MAINTAINER fabien.sanglier@softwareaggov.com
 ENV SAG_HOME=/opt/softwareag
 ENV INSTANCE_NAME=default
 
-ADD target/wMFibonacci/build/IS/WxFibonacci.zip $SAG_HOME/IntegrationServer/instances/${INSTANCE_NAME}/replicate/inbound/
+ADD target/wMFibonacci/build/IS/WxFibonacci.tar.gz $SAG_HOME/IntegrationServer/instances/${INSTANCE_NAME}/packages/
+RUN chown -R root:root $SAG_HOME/IntegrationServer/instances/${INSTANCE_NAME}/packages/
