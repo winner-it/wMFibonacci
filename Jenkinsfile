@@ -5,6 +5,7 @@ pipeline {
 
     environment {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
+        WORKSPACE = "/var/jenkins_home/workspace/wMFibonacci"
     }
 
     options {
@@ -31,42 +32,23 @@ pipeline {
             }
         }
         stage('Build') {
-            agent {
-                docker {
-                    image 'registry.docker.tests:5000/softwareag/abe:10.1'
-                    args '-v ${env.WORKSPACE}:/workspace'
-                }
-            }
             steps {
                 timeout(time:1, unit:'MINUTES') {
-                    sh "ant -DprojectName=${PROJECT_NAME} build"
+                    sh "docker-compose -p ${PROJECT_NAME} up compile"
                 }
             }
         }
         stage('Deploy') {
-            agent {
-                docker {
-                    image 'registry.docker.tests:5000/softwareag/deployer:10.1'
-                    args '-v ${env.WORKSPACE}:/workspace'
-                }
-            }
-
             steps {
                 timeout(time:10, unit:'MINUTES') {
-                    sh "ant -DprojectName=${PROJECT_NAME} deploy"
+                    sh 'docker-compose -p ${PROJECT_NAME} up deploy'
                 }
             }
         }
         stage('Tests') {
-            agent {
-                docker {
-                    image 'registry.docker.tests:5000/softwareag/wmtestsuite:10.1'
-                    args '-v ${env.WORKSPACE}:/workspace'
-                }
-            }
             steps {
                 timeout(time:10, unit:'MINUTES') {
-                    sh "ant -DprojectName=${PROJECT_NAME} test"
+                    sh 'docker-compose -p ${PROJECT_NAME} up unittests'
                 }
             }
             post {
