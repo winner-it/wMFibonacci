@@ -6,6 +6,8 @@ pipeline {
     environment {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
         WORKSPACE = "/var/jenkins_home/workspace/wMFibonacci"
+        REGISTRY = "registry.docker.tests:5000"
+        IMAGE_PREFIX = "softwareag"
     }
 
     options {
@@ -54,6 +56,18 @@ pipeline {
             post {
                 always {
                     junit "report/*.xml"
+                }
+            }
+        }
+        stage('Save') {
+            steps {
+                echo 'Saving Docker image'
+                script {
+                    docker.withRegistry('https://${REGISTRY}}') {
+                        def customImage = docker.build("${IMAGE_PREFIX}/${env.JOB_NAME}:${env.BUILD_ID}")
+                        customImage.push()
+                        customImage.push("latest")
+                    }
                 }
             }
         }
