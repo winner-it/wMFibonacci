@@ -61,7 +61,7 @@ pipeline {
                 }
             }
         }
-        stage('Save') {
+        stage('Save2Docker') {
             steps {
                 echo 'Saving Docker image'
                 script {
