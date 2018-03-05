@@ -1,4 +1,4 @@
 [submodule "sagdevops-ci-assets"]
 	path = sagdevops-ci-assets
-	url = http://git.docker.tests:10080/Fabien/sagdevops-ci-assets.git
+	url = https://github.com/lanimall/sagdevops-ci-assets.git
 	ignore = dirty
