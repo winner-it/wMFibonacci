@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<project name="ProjectInitializer" default="globalInit" basedir="."
+    xmlns="antlib:org.apache.tools.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+    <!-- loads all env variables -->
+    <property environment="env"/>
+
+    <target name="globalInit" depends="globalInitSAGCIHOME,globalInitSAGHome,globalInitProjectName,globalInitAntContrib">
+    </target>
+
+    <target name="globalInitAntContrib" depends="globalInitSAGCIHOME">
+        <path description="" id="cc.ant.classpath">
+            <fileset dir="${sag.ci.home}" includes="lib/*.jar" />
+        </path>
+
+        <taskdef classpathref="cc.ant.classpath" resource="net/sf/antcontrib/antlib.xml"/>
+    </target>
+
+    <!-- Resolution order is:
+    1) check the environment variables if set and non empty eg. export SAG_CI_HOME=test
+    2) check the passed in system property: eg. ant -DSAG_CI_HOME=test
+    3) otherwise, look into a property possibly set in build.xml
+    -->
+    <target name="globalInitSAGCIHOME">
+        <set-property-if-nonempty name="sag.ci.home" if-property-isset-nonempty="env.SAG_CI_HOME" />
+        <set-property-if-nonempty name="sag.ci.home" if-property-isset-nonempty="SAG_CI_HOME" />
+
+        <fail message="System property 'sag.ci.home' should be defined!" unless="sag.ci.home"/>
+    </target>
+
+    <target name="globalInitProjectName">
+        <set-property-if-nonempty name="projectName" if-property-isset-nonempty="env.PROJECT_NAME" />
+        <set-property-if-nonempty name="projectName" if-property-isset-nonempty="PROJECT_NAME" />
+
+        <fail message="System property 'projectName' should be defined!" unless="projectName"/>
+    </target>
+
+    <!-- system properties properties -->
+	<target name="globalInitSAGHome">
+        <set-property-if-nonempty name="SAGHome" if-property-isset-nonempty="env.SAG_HOME" />
+        <set-property-if-nonempty name="SAGHome" if-property-isset-nonempty="SAG_HOME" />
+
+        <fail message="System property 'SAGHome' should be defined!" unless="SAGHome"/>
+	</target>
+
+    <macrodef name="set-property-if-nonempty">
+        <attribute name="name" />
+        <attribute name="if-property-isset-nonempty" />
+        <attribute name="value" default="${@{if-property-isset-nonempty}}" />
+
+        <sequential>
+            <condition property="@{name}" value="@{value}">
+                <and>
+                    <isset property="@{if-property-isset-nonempty}" />
+                    <not>
+                        <equals arg1="${@{if-property-isset-nonempty}}" arg2="" trim="true" />
+                    </not>
+                </and>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <target name="initDeployerInstallationPath" unless="deployerInstallationPath">
+		<fail message="System property 'deployerInstallationPath' should be defined!"/>
+	</target>
+
+	<target name="initDeployerHost" unless="deployerHost">
+		<fail message="System property 'deployerHost' should be defined!"/>
+	</target>
+	
+	<target name="initDeployerPort" unless="deployerPort">
+		<fail message="System property 'deployerPort' should be defined!"/>
+	</target>
+	
+	<target name="initDeployerUsername" unless="deployerUsername">
+		<fail message="System property 'deployerUsername' should be defined!"/>
+	</target>
+	
+	<target name="initDeployerPassword" unless="deployerPassword">
+		<fail message="System property 'deployerPassword' should be defined!"/>
+	</target>
+			
+	<!-- mandatory properties -->
+	<target name="initProjcetName" unless="projectName">
+        <fail message="Property 'projectName' should be defined!"/>
+	</target>
+		
+	<target name="initBuildOutputDir" unless="buildOutputDir">
+		<fail message="Property 'buildOutputDir' should be defined!"/>
+	</target>
+	
+	<target name="initRepositoryName" unless="repositoryName">
+		<fail message="Property 'repositoryName' should be defined!"/>
+	</target>
+	
+	<target name="initDeployerProjectDefinition" unless="deployerProjectDefinition" depends="initProjcetName">
+        <!-- Target filename of the Deployer Project Specification for this run -->
+        <property name="deployerProjectDefinition" value="${workspace.dir}/target/ProjectAutomator/${projectName}DeploymentSpec.xml"/>
+
+        <fail message="Property 'deployerProjectDefinition' should be defined!" unless="deployerProjectDefinition"/>
+	</target>
+
+	<!-- optional build properties -->
+	<target name="initISProjectsDir" unless="isProjectsDir">
+		<property name="isProjectsDir" value=""/>
+	</target>
+	
+	<target name="initISConfigDir" unless="isConfigDir">
+		<property name="isConfigDir" value=""/>
+	</target>
+
+    <target name="initISTestsDir" unless="isTestDir">
+        <property name="isTestDir" value=""/>
+    </target>
+	
+	<target name="initBPMProjectsDir" unless="bpmProjectsDir">
+		<property name="bpmProjectsDir" value=""/>
+	</target>
+	
+	<target name="initMWSProjectsDir" unless="mwsProjectsDir">
+		<property name="mwsProjectsDir" value=""/>
+	</target>
+	
+	<target name="initRulesProjectsDir" unless="rulesProjectsDir">
+		<property name="rulesProjectsDir" value=""/>
+	</target>
+	
+	<target name="initUMProjectDir" unless="umProjectsDir">
+		<property name="umProjectsDir" value=""/>
+	</target>
+	
+	<target name="initTestPackageNamePattern" unless="testPackageNamePattern">
+		<property name="testPackageNamePattern" value=""/>
+	</target>
+
+	<target name="initJenkinsReportDir" unless="jenkinsReportDir">
+		<property name="jenkinsReportDir" value=""/>
+	</target>
+
+	<!--Main Init targets-->
+    <target name="baseInitABEBuild" depends="globalInit,initABEProperties" description="init properties needed for the ABE build phase">
+        <echo>Done initABEBuild!!</echo>
+    </target>
+
+    <target name="baseInitDeployer" depends="globalInit,initDeployerProperties,initDeployerSystemProperties,initDeployerMandatoryProperties" description="init properties needed for the Deployer phase">
+        <echo>Done initDeployer!!</echo>
+    </target>
+
+    <target name="baseInitTests" depends="globalInit, initISTestsDir, initTestPackageNamePattern,initJenkinsReportDir" description="init properties needed for the Test phase">
+        <echo>Done initTests!!</echo>
+    </target>
+
+    <target name="initABEProperties" depends="initBuildOutputDir,initISProjectsDir,initISConfigDir,initBPMProjectsDir,initMWSProjectsDir,initRulesProjectsDir,initUMProjectDir">
+    </target>
+
+    <target name="initDeployerProperties">
+        <echo>Loading deployer.properties at ${sag.ci.home}/deployer.properties</echo>
+        <property file="${sag.ci.home}/deployer.properties"/>
+    </target>
+
+    <target name="initDeployerSystemProperties" depends="initDeployerInstallationPath,initDeployerHost,initDeployerPort,initDeployerUsername,initDeployerPassword">
+    </target>
+
+	<target name="initDeployerMandatoryProperties" depends="initProjcetName,initRepositoryName,initDeployerProjectDefinition">
+	</target>
+</project>
