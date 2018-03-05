@@ -47,6 +47,7 @@
         <record name="GET" javaclass="com.wm.util.Values">
           <value name="operationType">GET</value>
           <value name="nsName">NextNumber/{number}_GET</value>
+          <value name="description"></value>
           <array name="requiredDefinitions" type="value" depth="1">
             <value>NextNumber/{number}_GET_$response</value>
           </array>
@@ -55,7 +56,7 @@
               <value name="name">number</value>
               <value name="source">PATH</value>
               <value name="type">STRING</value>
-              <null name="description"/>
+              <value name="description"></value>
               <Boolean name="isRequired">true</Boolean>
               <Boolean name="isArray">false</Boolean>
               <null name="defaultValue"/>
@@ -104,7 +105,7 @@
           <value name="name">fibonachiNumber</value>
           <value name="source">FORMDATA</value>
           <value name="type">STRING</value>
-          <null name="description"/>
+          <value name="description"></value>
           <Boolean name="isRequired">true</Boolean>
           <Boolean name="isArray">false</Boolean>
           <null name="defaultValue"/>
