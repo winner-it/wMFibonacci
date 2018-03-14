@@ -23,20 +23,20 @@
     <property name="jenkinsReportDir" value="${workspace.dir}/report"/>
 
     <target name="buildDeployTest">
-        <antcall target="Build and Deploy Solution.buildDeployTest"></antcall>
+        <antcall target="sagdevops-ci-assets.buildDeployTest"></antcall>
     </target>
 
     <target name="build" depends="">
         <echo>sag.ci.home=${sag.ci.home}</echo>
-        <antcall target="Build and Deploy Solution.build"></antcall>
+        <antcall target="sagdevops-ci-assets.build"></antcall>
     </target>
 
     <target name="deploy" depends="">
-        <antcall target="Build and Deploy Solution.deploy"></antcall>
+        <antcall target="sagdevops-ci-assets.deploy"></antcall>
     </target>
 
     <target name="test" depends="">
-        <antcall target="Build and Deploy Solution.test"></antcall>
+        <antcall target="sagdevops-ci-assets.test"></antcall>
     </target>
 </project>
 
