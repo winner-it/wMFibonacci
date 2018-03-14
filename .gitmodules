@@ -1,0 +1,3 @@
+[submodule "sagdevops-ci-assets"]
+	path = sagdevops-ci-assets
+	url = https://github.com/lanimall/sagdevops-ci-assets.git
