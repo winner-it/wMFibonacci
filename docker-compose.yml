@@ -46,7 +46,7 @@ services:
       - sagdevops
 
   wm_fibonacci:
-    image: registry.docker.tests:5000/softwareag/wm_fibonacci:10.1
+    image: registry.docker.tests:5000/softwareag/wmfibonacci:latest
     build:
       dockerfile: Dockerfile
       context: .
