@@ -7,7 +7,7 @@ pipeline {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
         /*WORKSPACE = "/var/jenkins_home/workspace/${env.JOB_NAME}"*/
         REGISTRY = "registry.docker.tests:5000"
-        IMAGE_NAME = "${env.JOB_NAME.toLowerCase()}"
+        IMAGE_NAME = "${env.JOB_NAME}".toLowerCase()
         IMAGE_VERSION = "10.1-${env.BUILD_ID}"
         IMAGE_PREFIX = "softwareag"
     }
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         */
-        stage('Prepare') {
+        stage('Prepare Tests') {
             steps {
                 timeout(time:5, unit:'MINUTES') {
                     sh "docker-compose -p ${PROJECT_NAME} up -d testserver"
@@ -42,14 +42,14 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy for Tests') {
             steps {
                 timeout(time:10, unit:'MINUTES') {
                     sh 'docker-compose -p ${PROJECT_NAME} up deploy'
                 }
             }
         }
-        stage('Tests') {
+        stage('Run Tests') {
             steps {
                 timeout(time:10, unit:'MINUTES') {
                     sh 'docker-compose -p ${PROJECT_NAME} up unittests'
@@ -61,7 +61,7 @@ pipeline {
                 }
             }
         }
-        stage('Save2Docker') {
+        stage('Save to Docker Registry') {
             steps {
                 echo 'Saving Docker image'
                 script {
