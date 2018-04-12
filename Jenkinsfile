@@ -5,7 +5,7 @@ pipeline {
 
     environment {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
-        WORKSPACE = "/var/jenkins_home/workspace/wMFibonacci"
+        /*WORKSPACE = "/var/jenkins_home/workspace/${env.JOB_NAME}"*/
         REGISTRY = "registry.docker.tests:5000"
         IMAGE_NAME = "${env.JOB_NAME.toLowerCase()}"
         IMAGE_VERSION = "10.1-${env.BUILD_ID}"
