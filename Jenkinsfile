@@ -61,6 +61,8 @@ pipeline {
                 }
             }
         }
+
+        /*
         stage('Save to Docker Registry') {
             steps {
                 echo 'Saving Docker image'
@@ -73,10 +75,24 @@ pipeline {
                 }
             }
         }
+        */
     }
 
     post {
-        always {
+        // only publish to the registry if the pipeline is successful
+        success {
+            steps {
+                echo 'Saving Docker image'
+                script {
+                    docker.withRegistry('https://${REGISTRY}') {
+                        def customImage = docker.build("${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}")
+                        customImage.push()
+                        customImage.push("latest")
+                    }
+                }
+            }
+        }
+        cleanup {
             sh "docker-compose -p ${PROJECT_NAME} down -v || true"
         }
     }
