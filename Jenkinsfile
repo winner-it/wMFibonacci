@@ -92,7 +92,7 @@ pipeline {
                 }
             }
         }
-        cleanup {
+        always {
             sh "docker-compose -p ${PROJECT_NAME} down -v || true"
         }
     }
