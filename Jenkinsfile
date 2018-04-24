@@ -18,16 +18,6 @@ pipeline {
     }
 
     stages {
-        /*
-        Use Advanced Sub-Module Behaviors in Jenkins
-        stage("Checkout") {
-            steps {
-                checkout scm
-                sh 'git submodule update --init'
-                stash(name:'scripts', includes:'**')
-            }
-        }
-        */
         stage('Prepare Tests') {
             steps {
                 timeout(time:5, unit:'MINUTES') {
@@ -61,21 +51,6 @@ pipeline {
                 }
             }
         }
-
-        /*
-        stage('Save to Docker Registry') {
-            steps {
-                echo 'Saving Docker image'
-                script {
-                    docker.withRegistry('https://${REGISTRY}') {
-                        def customImage = docker.build("${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}")
-                        customImage.push()
-                        customImage.push("latest")
-                    }
-                }
-            }
-        }
-        */
     }
 
     post {
