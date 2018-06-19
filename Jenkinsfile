@@ -51,11 +51,7 @@ pipeline {
                 }
             }
         }
-    }
-
-    post {
-        // only publish to the registry if the pipeline is successful
-        success {
+        stage('Save to Docker Registry') {
             steps {
                 echo 'Saving Docker image'
                 script {
@@ -67,6 +63,9 @@ pipeline {
                 }
             }
         }
+    }
+
+    post {
         always {
             sh "docker-compose -p ${PROJECT_NAME} down -v || true"
         }
