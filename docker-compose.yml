@@ -15,7 +15,7 @@ services:
       - sagdevops
 
   deploy:
-    image: registry.docker.tests:5000/softwareag/deployer:10.1
+    image: registry.docker.tests:5000/softwareag/deployer_licensed:10.1
     command: ant -DprojectName=${PROJECT_NAME} deploy
     environment:
       - EXIT_AFTER_COMMAND=false
@@ -38,7 +38,7 @@ services:
       - sagdevops
 
   testserver:
-    image: registry.docker.tests:5000/softwareag/msc:10.1
+    image: registry.docker.tests:5000/softwareag/msc_licensed:10.1
     ports:
       - "5555:5555"
       - "9999:9999"
