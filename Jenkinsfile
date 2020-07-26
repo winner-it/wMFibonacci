@@ -21,15 +21,19 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building code with profile ${BUILD_PROFILE}"
+                timeout(time:1, unit:'MINUTES') {
+                    sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} build
+                }
             }
         }
+        
         stage('Package') {
             steps {
                 echo "Packaging build - ${BUILD_FINAL}"
             }
         }
     }
-
+        
     post {
         success {
             echo "Upload build to s3"
