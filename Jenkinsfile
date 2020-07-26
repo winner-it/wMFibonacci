@@ -21,9 +21,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "Building code with profile ${BUILD_PROFILE}"
+                echo "Building code for ${PROJECT_NAME} with profile ${BUILD_PROFILE}"
                 timeout(time:1, unit:'MINUTES') {
-                    sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} build
+                    sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} build"
                 }
             }
         }
