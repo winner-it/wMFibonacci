@@ -3,10 +3,10 @@ pipeline {
     environment {
         PROJECT_NAME = "${env.JOB_NAME}"
         
-        BUILD_NAME = "${env.JOB_NAME}"
+        BUILD_NAME = "${PROJECT_NAME}"
         BUILD_VERSION = "0.0.${env.BUILD_ID}"
         BUILD_PROFILE = "prod"
-        BUILD_FINAL = "${BUILD_NAME}-${BUILD_PROFILE}-${BUILD_VERSION}".toLowerCase()
+        BUILD_FINAL = "${BUILD_NAME}-${BUILD_VERSION}".toLowerCase()
         PACKAGE_S3_BUCKET = "sedemos-prod-main"
         PACKAGE_S3_BUCKET_PREFIX = "cicd_builds/wxFiboncci"
     }
@@ -31,6 +31,14 @@ pipeline {
         stage('Package') {
             steps {
                 echo "Packaging build - ${BUILD_FINAL}"
+
+                fileOperations(
+                    [
+                    	folderCopyOperation(sourceFolderPath: "./target/${PROJECT_NAME}/build/", destinationFolderPath: "./packaging/${BUILD_FINAL}/"),
+                        fileZipOperation(folderPath: "./packaging/${BUILD_FINAL}/", outputFolderPath: "./packaging/"),
+                        folderDeleteOperation("./packaging/${BUILD_FINAL}/")
+                    ]
+                )
             }
         }
     }
