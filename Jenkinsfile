@@ -29,7 +29,20 @@ pipeline {
             }
         }
         
-        stage('Package') {
+        stage('Deploy') {
+            steps {
+				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} deploy"
+            }
+        }
+        
+	 	stage('Test') {
+	        steps {
+				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} test"
+				junit 'report/'
+	        }
+	    }
+	    
+        stage('Final Packaging') {
             steps {
                 echo "Packaging build - ${BUILD_FINAL}"
 
@@ -43,41 +56,31 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+        stage('Push to S3 Repo') {
             steps {
-				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} deploy"
+	            echo "Upload final build to s3"
+	            withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
+	                s3Upload(
+	                    file:"./packaging/${BUILD_FINAL}.zip", 
+	                    bucket:"${PACKAGE_S3_BUCKET}", 
+	                    path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_FINAL}.zip",
+	                    pathStyleAccessEnabled: true, 
+	                    payloadSigningEnabled: true,
+	                )
+	            }
             }
         }
-        
-	 	stage('Test') {
-	        steps {
-				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} test"
-				junit 'report/'
-	        }
-	    }
     }
         
     post {
         success {
         	echo "success...final tasks..."
-        	
-            echo "Upload good build to s3"
-            withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
-                s3Upload(
-                    file:"./packaging/${BUILD_FINAL}.zip", 
-                    bucket:"${PACKAGE_S3_BUCKET}", 
-                    path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_FINAL}.zip",
-                    pathStyleAccessEnabled: true, 
-                    payloadSigningEnabled: true,
-                )
-            }
-            
             echo "Cleaning up"
-            //fileOperations(
-            //    [
-            //        fileDeleteOperation(excludes: "", includes: "./packaging/${BUILD_FINAL}.zip")
-            //    ]
-            //)
+            fileOperations(
+                [
+                    fileDeleteOperation(excludes: "", includes: "./packaging/${BUILD_FINAL}.zip")
+                ]
+            )
         }
     }
 }
