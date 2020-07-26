@@ -1,3 +1,5 @@
+def skipRemainingStages = false
+
 pipeline {
     //this should be given by jenkins at build time
     environment {
@@ -39,18 +41,27 @@ pipeline {
 	 	stage('Unit Tests') {
 	        steps {
 				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} test"
+				
 				junit 'report/'
 				
 				script {
-                    /*
-		             * Use the JUnit plugin to analyze the test-report.xml test results
-		             */
-		            step([$class: 'JUnitResultArchiver', testResults: 'report/TEST-*.xml'])
+					//do not execute the remaining steps if junit tests failed
+					if (currentBuild.result == 'UNSTABLE'){
+						skipRemainingStages = true
+					}
+					
+					println "skipRemainingStages = ${skipRemainingStages}"
                 }
 	        }
 	    }
 	    
         stage('Final Packaging') {
+            when {
+                expression {
+                    !skipRemainingStages
+                }
+            }
+            
             steps {
                 echo "Packaging build - ${BUILD_FINAL}"
 
@@ -65,6 +76,12 @@ pipeline {
         }
         
         stage('Push to S3 Repo') {
+            when {
+                expression {
+                    !skipRemainingStages
+                }
+            }
+            
             steps {
 	            echo "Upload final build to s3"
 	            withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
