@@ -7,6 +7,7 @@ pipeline {
         BUILD_VERSION = "0.0.${env.BUILD_ID}"
         BUILD_PROFILE = "prod"
         BUILD_FINAL = "${BUILD_NAME}-${BUILD_VERSION}".toLowerCase()
+        PACKAGE_S3_BUCKET_REGION = "us-east-1"
         PACKAGE_S3_BUCKET = "sedemos-prod-main"
         PACKAGE_S3_BUCKET_PREFIX = "cicd_builds/wxFiboncci"
     }
@@ -45,9 +46,25 @@ pipeline {
         
     post {
         success {
+        	echo "success...final tasks..."
+        	
             echo "Upload build to s3"
+            withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
+                s3Upload(
+                    file:"./packaging/${BUILD_FINAL}.zip", 
+                    bucket:"${PACKAGE_S3_BUCKET}", 
+                    path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_FINAL}.zip",
+                    pathStyleAccessEnabled: true, 
+                    payloadSigningEnabled: true,
+                )
+            }
             
             echo "Cleaning up"
+            //fileOperations(
+            //    [
+            //        fileDeleteOperation(excludes: "", includes: "./packaging/${BUILD_FINAL}.zip")
+            //    ]
+            //)
         }
     }
 }
