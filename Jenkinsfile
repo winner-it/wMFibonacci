@@ -1,11 +1,12 @@
 pipeline {
     //this should be given by jenkins at build time
     environment {
-        PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
-        BUILD_NAME = "${env.JOB_NAME}".toLowerCase()
+        PROJECT_NAME = "${env.JOB_NAME}"
+        
+        BUILD_NAME = "${env.JOB_NAME}"
         BUILD_VERSION = "0.0.${env.BUILD_ID}"
         BUILD_PROFILE = "prod"
-        BUILD_FINAL = "${BUILD_NAME}-${BUILD_PROFILE}-${BUILD_VERSION}"
+        BUILD_FINAL = "${BUILD_NAME}-${BUILD_PROFILE}-${BUILD_VERSION}".toLowerCase()
         PACKAGE_S3_BUCKET = "sedemos-prod-main"
         PACKAGE_S3_BUCKET_PREFIX = "cicd_builds/wxFiboncci"
     }
