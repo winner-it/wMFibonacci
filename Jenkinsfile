@@ -30,13 +30,13 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+        stage('Deploy to Test Server') {
             steps {
 				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} deploy"
             }
         }
         
-	 	stage('Test') {
+	 	stage('Unit Tests') {
 	        steps {
 				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} test"
 				junit 'report/'
