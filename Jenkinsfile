@@ -40,12 +40,14 @@ pipeline {
 	        steps {
 				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} test"
 				junit 'report/'
+				
+				script {
+                    /*
+		             * Use the JUnit plugin to analyze the test-report.xml test results
+		             */
+		            step([$class: 'JUnitResultArchiver', testResults: 'report/TEST-*.xml'])
+                }
 	        }
-	        
-	        /*
-             * Use the JUnit plugin to analyze the test-report.xml test results
-             */
-            step([$class: 'JUnitResultArchiver', testResults: 'report/TEST-*.xml'])
 	    }
 	    
         stage('Final Packaging') {
@@ -86,8 +88,7 @@ pipeline {
             }
         }
     }
-      
-        
+         
     post {
         success {
         	echo "success...final tasks..."
