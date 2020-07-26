@@ -10,7 +10,7 @@ pipeline {
         BUILD_LATEST = "${BUILD_NAME}-latest".toLowerCase()
         PACKAGE_S3_BUCKET_REGION = "us-east-1"
         PACKAGE_S3_BUCKET = "sedemos-prod-main"
-        PACKAGE_S3_BUCKET_PREFIX = "cicd_builds/wxFiboncci"
+        PACKAGE_S3_BUCKET_PREFIX = "cicd_builds/${PROJECT_NAME}s"
     }
 
     agent any
