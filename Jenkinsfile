@@ -70,9 +70,9 @@ pipeline {
 	                )
 	                
 	                s3Upload(
-	                    file:"./packaging/${BUILD_FINAL}.zip", 
 	                    bucket:"${PACKAGE_S3_BUCKET}", 
-	                    path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_LATEST}.zip",
+	                    path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_LATEST}.txt",
+	                    text:"s3://${PACKAGE_S3_BUCKET}/${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_FINAL}.zip"
 	                    pathStyleAccessEnabled: true, 
 	                    payloadSigningEnabled: true,
 	                )
