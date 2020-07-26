@@ -42,13 +42,26 @@ pipeline {
                 )
             }
         }
+        
+        stage('Deploy') {
+            steps {
+				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} deploy"
+            }
+        }
+        
+	 	stage('Test') {
+	        steps {
+				sh "${env.SAG_HOME}/common/lib/ant/bin/ant -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${PROJECT_NAME} test"
+				junit 'report/'
+	        }
+	    }
     }
         
     post {
         success {
         	echo "success...final tasks..."
         	
-            echo "Upload build to s3"
+            echo "Upload good build to s3"
             withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
                 s3Upload(
                     file:"./packaging/${BUILD_FINAL}.zip", 
