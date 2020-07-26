@@ -1,16 +1,16 @@
 pipeline {
-    agent {
-        label 'docker'
-    }
-
+    //this should be given by jenkins at build time
     environment {
         PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
-        /*WORKSPACE = "/var/jenkins_home/workspace/${env.JOB_NAME}"*/
-        REGISTRY = "registry.docker.tests:5000"
-        IMAGE_NAME = "${env.JOB_NAME}".toLowerCase()
-        IMAGE_VERSION = "10.1-${env.BUILD_ID}"
-        IMAGE_PREFIX = "softwareag"
+        BUILD_NAME = "${env.JOB_NAME}".toLowerCase()
+        BUILD_VERSION = "0.0.${env.BUILD_ID}"
+        BUILD_PROFILE = "prod"
+        BUILD_FINAL = "${BUILD_NAME}-${BUILD_PROFILE}-${BUILD_VERSION}"
+        PACKAGE_S3_BUCKET = "sedemos-prod-main"
+        PACKAGE_S3_BUCKET_PREFIX = "cicd_builds/wxFiboncci"
     }
+
+    agent any
 
     options {
         buildDiscarder(logRotator(numToKeepStr:'10'))
@@ -18,56 +18,23 @@ pipeline {
     }
 
     stages {
-        stage('Prepare Tests') {
-            steps {
-                timeout(time:5, unit:'MINUTES') {
-                    sh "docker-compose -p ${PROJECT_NAME} up -d testserver"
-                }
-            }
-        }
         stage('Build') {
             steps {
-                timeout(time:1, unit:'MINUTES') {
-                    sh "docker-compose -p ${PROJECT_NAME} up compile"
-                }
+                echo "Building code with profile ${NPM_BUILD_PROFILE}"
             }
         }
-        stage('Deploy for Tests') {
+        stage('Package') {
             steps {
-                timeout(time:10, unit:'MINUTES') {
-                    sh 'docker-compose -p ${PROJECT_NAME} up deploy'
-                }
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                timeout(time:10, unit:'MINUTES') {
-                    sh 'docker-compose -p ${PROJECT_NAME} up unittests'
-                }
-            }
-            post {
-                always {
-                    junit "report/*.xml"
-                }
-            }
-        }
-        stage('Save to Docker Registry') {
-            steps {
-                echo 'Saving Docker image'
-                script {
-                    docker.withRegistry('https://${REGISTRY}') {
-                        def customImage = docker.build("${IMAGE_PREFIX}/${IMAGE_NAME}:${IMAGE_VERSION}")
-                        customImage.push()
-                        customImage.push("latest")
-                    }
-                }
+                echo "Packaging build - ${BUILD_FINAL}"
             }
         }
     }
 
     post {
-        always {
-            sh "docker-compose -p ${PROJECT_NAME} down -v || true"
+        success {
+            echo "Upload build to s3"
+            
+            echo "Cleaning up"
         }
     }
 }
