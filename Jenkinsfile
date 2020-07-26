@@ -20,7 +20,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "Building code with profile ${NPM_BUILD_PROFILE}"
+                echo "Building code with profile ${BUILD_PROFILE}"
             }
         }
         stage('Package') {
