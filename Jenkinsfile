@@ -116,5 +116,32 @@ pipeline {
                 ]
             )
         }
+		unstable {
+	        echo "Unstable - Upload status to S3"
+	        withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
+	        	s3Upload(
+		           file:"/dev/null",
+		           bucket:"${PACKAGE_S3_BUCKET}", 
+		           path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_FINAL}-unstable",
+		           text:"Unstable build",
+		           pathStyleAccessEnabled: true, 
+		           payloadSigningEnabled: true,
+	        	)
+	        }
+		}
+		
+		failure {
+	        echo "Failed note - Upload status to S3"
+	        withAWS(region:"${PACKAGE_S3_BUCKET_REGION}") {
+	        	s3Upload(
+		           file:"/dev/null",
+		           bucket:"${PACKAGE_S3_BUCKET}", 
+		           path:"${PACKAGE_S3_BUCKET_PREFIX}/${BUILD_FINAL}-failed",
+		           text:"Failed build",
+		           pathStyleAccessEnabled: true, 
+		           payloadSigningEnabled: true,
+	        	)
+	        }
+		}
     }
 }
