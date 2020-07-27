@@ -1,4 +1,4 @@
-FROM registry.docker.tests:5000/softwareag/msc:10.1
+FROM registry.docker.tests:5000/softwareag/msc_licensed:10.1
 
 MAINTAINER fabien.sanglier@softwareaggov.com
 
