@@ -1,6 +1,6 @@
-FROM registry.docker.tests:5000/softwareag/msc_licensed:10.1
+FROM 192.168.200.30:5000/softwareag/msc_licensed:10.1
 
-MAINTAINER fabien.sanglier@softwareaggov.com
+MAINTAINER winner-it@winner-it.com.br
 
 ENV SAG_HOME=/opt/softwareag
 ENV INSTANCE_NAME=default
