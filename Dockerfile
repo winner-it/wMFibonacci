@@ -1,6 +1,6 @@
-FROM 192.168.200.30:5000/softwareag/msc_licensed:10.1
+FROM https://hub.docker.com/r/winneritdocker/softwareag
 
-MAINTAINER winner-it@winner-it.com.br
+MAINTAINER eduardo.pomaro@winner-it.com.br
 
 ENV SAG_HOME=/opt/softwareag
 ENV INSTANCE_NAME=default
