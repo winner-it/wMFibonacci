@@ -33,7 +33,7 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                    image 'registry.docker.tests:5000/softwareag/abe:10.1'
+                    image '192.168.200.30:5000/softwareag/abe:10.1'
                     args '-v ${env.WORKSPACE}:/workspace'
                 }
             }
@@ -46,7 +46,7 @@ pipeline {
         stage('Deploy') {
             agent {
                 docker {
-                    image 'registry.docker.tests:5000/softwareag/deployer:10.1'
+                    image '192.168.200.30:5000/softwareag/deployer:10.1'
                     args '-v ${env.WORKSPACE}:/workspace'
                 }
             }
@@ -60,7 +60,7 @@ pipeline {
         stage('Tests') {
             agent {
                 docker {
-                    image 'registry.docker.tests:5000/softwareag/wmtestsuite:10.1'
+                    image '192.168.200.30:5000/softwareag/wmtestsuite:10.1'
                     args '-v ${env.WORKSPACE}:/workspace'
                 }
             }
